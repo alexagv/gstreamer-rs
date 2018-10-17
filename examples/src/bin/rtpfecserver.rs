@@ -87,6 +87,7 @@ fn make_fec_encoder(fec_percentage: u32) -> Result<gst::Element, Error> {
     fecenc.set_property("pt", &100u32.to_value())?;
     fecenc.set_property("multipacket", &true.to_value())?;
     fecenc.set_property("percentage", &fec_percentage.to_value())?;
+    fecenc.set_property("percentage-important", &fec_percentage.to_value())?;
 
     Ok(fecenc)
 }
@@ -107,9 +108,9 @@ fn example_main() -> Result<(), Error> {
     let src = make_element("uridecodebin", None)?;
     let conv = make_element("videoconvert", None)?;
     let q1 = make_element("queue", None)?;
-    let enc = make_element("vp8enc", None)?;
+    let enc = make_element("x264enc", None)?;
     let q2 = make_element("queue", None)?;
-    let pay = make_element("rtpvp8pay", None)?;
+    let pay = make_element("rtph264pay", None)?;
     let rtpbin = make_element("rtpbin", None)?;
     let sink = make_element("udpsink", None)?;
 
@@ -166,14 +167,12 @@ fn example_main() -> Result<(), Error> {
     src.set_property_from_str("pattern", "ball");
     sink.set_property("host", &"127.0.0.1".to_value())?;
     sink.set_property("sync", &true.to_value())?;
-    enc.set_property("keyframe-max-dist", &30i32.to_value())?;
-    enc.set_property("threads", &12i32.to_value())?;
-    enc.set_property("cpu-used", &(-16i32).to_value())?;
-    enc.set_property("deadline", &1i64.to_value())?;
-    enc.set_property_from_str("error-resilient", "default");
     src.set_property("expose-all-streams", &false.to_value())?;
     src.set_property("caps", &video_caps.to_value())?;
     src.set_property("uri", &uri.to_value())?;
+    enc.set_property("key-int-max", &16u32.to_value())?;
+    enc.set_property_from_str("tune", "zerolatency");
+    enc.set_property("bitrate", &10000u32.to_value())?;
 
     let bus = pipeline
         .get_bus()

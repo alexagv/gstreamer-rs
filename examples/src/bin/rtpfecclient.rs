@@ -121,8 +121,8 @@ fn example_main() -> Result<(), Error> {
     let src = make_element("udpsrc", None)?;
     let netsim = make_element("netsim", None)?;
     let rtpbin = make_element("rtpbin", None)?;
-    let depay = make_element("rtpvp8depay", None)?;
-    let dec = make_element("vp8dec", None)?;
+    let depay = make_element("rtph264depay", None)?;
+    let dec = make_element("avdec_h264", None)?;
     let conv = make_element("videoconvert", None)?;
     let scale = make_element("videoscale", None)?;
     let filter = make_element("capsfilter", None)?;
@@ -181,7 +181,7 @@ fn example_main() -> Result<(), Error> {
                     &[
                         ("media", &"video"),
                         ("clock-rate", &90000i32),
-                        ("encoding-name", &"VP8"),
+                        ("encoding-name", &"H264"),
                     ],
                 )
                 .to_value(),
