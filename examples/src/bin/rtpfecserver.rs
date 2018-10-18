@@ -172,7 +172,7 @@ fn example_main() -> Result<(), Error> {
     src.set_property("uri", &uri.to_value())?;
     enc.set_property("key-int-max", &16u32.to_value())?;
     enc.set_property_from_str("tune", "zerolatency");
-    enc.set_property("bitrate", &10000u32.to_value())?;
+    enc.set_property("bitrate", &5000u32.to_value())?;
 
     let bus = pipeline
         .get_bus()
